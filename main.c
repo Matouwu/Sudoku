@@ -28,7 +28,7 @@ int main(int argc, char* argv[]){
         if(B[pos_y][pos_x] == 0){
             int add = add_board(B, &pos_x, &pos_y);
             if(add != 1){
-              printf("Non c'est pas possible\n");
+              printf("add_board failed\n");
             }
 
             /* Update graphic */

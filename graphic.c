@@ -54,12 +54,13 @@ void position_big(int *pos_x, int *pos_y){
         }
 }
 void position_small(int *pos_x, int *pos_y){
-
     if(*pos_x > 50 && *pos_x < 950
           && *pos_y > 1000 && *pos_y < 1100){
         *pos_x = (*pos_x-50)/100 +1;
         *pos_y = 1;
         printf("small -> posx: %d, posy: %d\n",*pos_x, *pos_y);
+    } else {
+        error_message(2);
     }
 }
 
@@ -89,9 +90,6 @@ int get_in_number(){
     while(posx<1 || posx> 10 || posy<1 || posy>10){
         MLV_wait_mouse(&posx, &posy);
         position_small(&posx, &posy);
-        if(posx<1 || posx> 10 || posy<1 || posy>10){
-            error_message(2);
-        }
     }
     return posx;
 }
@@ -119,10 +117,23 @@ void error_message(int code){
             break;
         case 2:
             c = "Wrong click, you have to click a number.";
+            break;
+        case 3:
+            c = "Wrong number, you have to click another number.";
+            break;
+        case 4:
+            c = "Same number in the line.";
+            break;
+        case 5:
+            c = "Same number in the colonne.";
+            break;
+        case 6:
+            c = "Same number in the box.";
+            break;
     }
     MLV_Font* font = MLV_load_font("data/ARIALBD.TTF",35);
     MLV_draw_text_with_font(50, 1130, c, font, MLV_COLOR_RED);
-
+    MLV_actualise_window();
 }
 
 
