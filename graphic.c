@@ -46,51 +46,54 @@ void graphic_number(Board B){
 void position_big(int *pos_x, int *pos_y){
     if(*pos_x > 50 && *pos_x < SUDOKU_WIDTH+50
             && *pos_y > 50 && *pos_y < SUDOKU_HEIGHT+50){
-        *pos_x = (*pos_x-50)/100 +1 ;
-        *pos_y = (*pos_y-50)/100 +1 ;
+        *pos_x = (*pos_x-50)/100 +1;
+        *pos_y = (*pos_y-50)/100 +1;
         printf("posx: %d, posy: %d\n",*pos_x, *pos_y);
         *pos_x = *pos_x-1;
         *pos_y = *pos_y-1;
         }
 }
 void position_small(int *pos_x, int *pos_y){
-    if(*pos_x > 1000 && *pos_x < 1300
-          && *pos_y > 250 && *pos_y < 550){
-        *pos_x = (*pos_x-1000)/100 +1 ;
-        *pos_y = (*pos_y-250)/100 +1 ;
+
+    if(*pos_x > 50 && *pos_x < 950
+          && *pos_y > 1000 && *pos_y < 1100){
+        *pos_x = (*pos_x-50)/100 +1;
+        *pos_y = 1;
         printf("small -> posx: %d, posy: %d\n",*pos_x, *pos_y);
-          }
+    }
 }
 
 void graphic_small(Board B){
-    MLV_draw_filled_rectangle(997, 247, 306, 306, MLV_COLOR_RED); /* square*/
-    MLV_draw_filled_rectangle(1000, 250, 300, 300,MLV_COLOR_WHITE);
+    MLV_draw_filled_rectangle(48, 998, NUMBER_WIDTH + 4, NUMBER_HEIGHT + 4, MLV_COLOR_WHITE); /* square*/
+    MLV_draw_filled_rectangle(50, 1000, NUMBER_WIDTH, NUMBER_HEIGHT,MLV_rgba(255,210,210,MLV_ALPHA_OPAQUE));
 
-    MLV_draw_line(1000, 350, 1300, 350, MLV_COLOR_RED);   /* row */
-    MLV_draw_line(1000, 450, 1300, 450, MLV_COLOR_RED);
-    MLV_draw_line(1100, 250, 1100, 550, MLV_COLOR_RED);   /* col */
-    MLV_draw_line(1200, 250, 1200, 550, MLV_COLOR_RED);
+    int i;
+    for(i=0; i<NUMBER_WIDTH; i++){
+      if(i%100 == 0){
+        MLV_draw_line(50+i, 1000, 50+i, 1100, MLV_COLOR_WHITE);
+      }
+    }
 
-    int i, j, n=0;
-    for(i=0; i<3; i++){
-        for(j=0; j<3; j++){
-            /* change int -> const char* */
-            n++;
-            char x [12];
-            sprintf(x, "%d", n);
-            const char* c = x;
-
-            MLV_Font* font = MLV_load_font("data/SinclairLightScript Roman.ttf",50);
-            MLV_draw_text_with_font((j)*100+1040, (i)*100+285, c, font, MLV_COLOR_RED);
-        }
+    for(i=0; i<9; i++){
+        /* change int -> const char* */
+        char x [12];
+        sprintf(x, "%d", i+1);
+        const char* c = x;
+        MLV_Font* font = MLV_load_font("data/SinclairLightScript Roman.ttf",50);
+        MLV_draw_text_with_font(90+i*100, 1030, c, font, MLV_COLOR_RED);
     }
 }
 
 int get_in_number(){
-    int posx, posy;
-    MLV_wait_mouse(&posx, &posy);
-    position_small(&posx, &posy);
-    return ((posx-1)*3)+posy;
+    int posx=0, posy=0;
+    while(posx<1 || posx> 10 || posy<1 || posy>10){
+        MLV_wait_mouse(&posx, &posy);
+        position_small(&posx, &posy);
+        if(posx<1 || posx> 10 || posy<1 || posy>10){
+            error_message(2);
+        }
+    }
+    return posx;
 }
 
 /*void graphic_update(Board B, int *pos_x, int *pos_y){
@@ -109,14 +112,16 @@ int get_in_number(){
 //}*/
 
 void error_message(int code){
+    const char *c;
     switch(code){
         case 1:
-            const char* c = "Wrong Input";
-                MLV_Font* font = MLV_load_font("data/SinclairLightScript Roman.ttf",50);
-                MLV_draw_text_with_font(1200+90, 400+90, c, font, MLV_COLOR_RED);
+            c = "Wrong Input, you have to click on an empty box.";
             break;
-
+        case 2:
+            c = "Wrong click, you have to click a number.";
     }
+    MLV_Font* font = MLV_load_font("data/ARIALBD.TTF",35);
+    MLV_draw_text_with_font(50, 1130, c, font, MLV_COLOR_RED);
 
 }
 

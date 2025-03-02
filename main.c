@@ -5,7 +5,6 @@
 
 
 
-
 int main(int argc, char* argv[]){
     /* Create the window */
     MLV_create_window("SUDOKU", "Sudoku", WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -16,12 +15,14 @@ int main(int argc, char* argv[]){
     Board B;
     fread_board(argv[1], B);
 
-    while(1){
-          /* Initialize the graphic */
-        graphic_init(B);
+    /* Initialize the graphic */
+    graphic_init(B);
 
+
+    while(1){
         int pos_x, pos_y;
         MLV_wait_mouse(&pos_x, &pos_y);
+        MLV_draw_filled_rectangle(40, 1100, 1000, 300, MLV_COLOR_WHITE); /* erase error message */
 
         position_big(&pos_x, &pos_y);
         if(B[pos_y][pos_x] == 0){
@@ -29,15 +30,15 @@ int main(int argc, char* argv[]){
             if(add != 1){
               printf("Non c'est pas possible\n");
             }
+
+            /* Update graphic */
+            graphic_init(B);
         } else {
-            const char* c = "ça compte GRAVE PASSSSSSSSSSSSSSSS";
-            MLV_Font* font = MLV_load_font("data/SinclairLightScript Roman.ttf",30);
-            MLV_draw_text_with_font(1150, 690, c, font, MLV_COLOR_RED);
+            error_message(1);
             MLV_actualise_window();
-            printf("ça compte GRAVE PASSSSSSSSSSSSSSSS\n");
+            MLV_wait_seconds(2);
         }
     }
-
 
     return EXIT_SUCCESS;
 }
